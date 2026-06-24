@@ -1,0 +1,75 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Integration tests require an Android emulator and take considerably longer
+# than unit tests. They run in a separate job so that unit-test failures are
+# reported quickly without waiting for the emulator to boot.
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.2'
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      # Generate Android platform files if not committed (CI-only step).
+      - name: Generate Android platform
+        run: flutter create . --platforms android
+
+      # Several plugins (biometric_storage 5.0.1, connectivity_plus 7.1.1)
+      # declare compileSdkVersion below what their transitive AndroidX deps
+      # and Java source require.  connectivity_plus 7.1.1 references
+      # VERSION_CODES.VANILLA_ICE_CREAM and TRANSPORT_SATELLITE which only
+      # exist at API 35 (Android 15).  biometric_storage needs at least 34.
+      # A Gradle init script in ~/.gradle/init.d/ is applied globally before
+      # any build task, overriding compileSdkVersion for all library subprojects.
+      - name: Patch plugin compileSdk
+        run: |
+          mkdir -p "${HOME}/.gradle/init.d"
+          cat > "${HOME}/.gradle/init.d/override-compile-sdk.gradle" << 'GRADLE'
+          allprojects {
+              afterEvaluate {
+                  if (plugins.hasPlugin('com.android.library')) {
+                      android.compileSdkVersion 35
+                  }
+              }
+          }
+          GRADLE
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run integration tests on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          arch: x86_64
+          profile: pixel_5
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: flutter test integration_test/ -d emulator-5554

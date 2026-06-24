@@ -1,0 +1,13 @@
+# Tag declaration for flutter test --tags / --exclude-tags.
+#
+# Any test file that renders a Widget against a committed pixel baseline should
+# be annotated with @Tags(['golden']) so that:
+#   - CI runs it in isolation (flutter test --tags golden)
+#   - Unit tests + coverage always complete even when a golden baseline drifts
+#     due to Flutter version or font-rendering differences.
+tags:
+  golden:
+    description: >
+      Tests that compare widget renders against committed .png baseline files
+      via matchesGoldenFile(). Isolated from unit tests to prevent a pixel
+      divergence from masking unrelated failures or blocking coverage reports.

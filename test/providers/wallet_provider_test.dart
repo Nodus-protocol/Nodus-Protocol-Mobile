@@ -35,33 +35,21 @@ void main() {
       });
 
       test('should have disconnect method available', () {
-        // This tests that the disconnect method exists and can be called
-        // In a full implementation with proper DI, we'd test the actual behavior
         expect(provider.disconnect, isA<Function>());
       });
     });
 
     group('connect() - Secure Storage Integration', () {
       test('should handle invalid secret key gracefully', () async {
-        // Arrange
-        const invalidKey = 'invalid_key';
+        await provider.connect('invalid_key');
 
-        // Act
-        await provider.connect(invalidKey);
-
-        // Assert
         expect(provider.state, equals(WalletState.error));
         expect(provider.error, contains('Invalid secret key'));
       });
 
       test('should validate secret key format', () async {
-        // Arrange
-        const shortKey = 'S123';
+        await provider.connect('S123');
 
-        // Act
-        await provider.connect(shortKey);
-
-        // Assert
         expect(provider.state, equals(WalletState.error));
         expect(provider.error, isNotNull);
       });
@@ -74,7 +62,6 @@ void main() {
       });
 
       test('should have proper state management', () {
-        // Test that all required getters exist
         expect(provider.state, isA<WalletState>());
         expect(provider.address, isA<String?>());
         expect(provider.accessToken, isA<String?>());
