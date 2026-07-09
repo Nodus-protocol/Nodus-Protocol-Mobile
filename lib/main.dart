@@ -8,6 +8,7 @@ import 'screens/liquidity_screen.dart';
 import 'screens/pool_overview_screen.dart';
 import 'screens/swap_screen.dart';
 import 'screens/wallet_screen.dart';
+import 'services/deep_link_service.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 import 'widgets/app_lock_gate.dart';
@@ -18,11 +19,17 @@ void main() {
   // missing Firebase project config must not block app launch, and
   // initialize() already swallows that failure internally.
   NotificationService().initialize();
-  runApp(const AMMobileApp());
+  // Constructed here, early, so app_links can capture the link that
+  // launched the app from a cold start. It's only acted on once
+  // DeepLinkListener mounts, which happens after AppLockGate unlocks.
+  final deepLinkService = DeepLinkService();
+  runApp(AMMobileApp(deepLinkService: deepLinkService));
 }
 
 class AMMobileApp extends StatelessWidget {
-  const AMMobileApp({super.key});
+  const AMMobileApp({super.key, required this.deepLinkService});
+
+  final DeepLinkService deepLinkService;
 
   @override
   Widget build(BuildContext context) {
