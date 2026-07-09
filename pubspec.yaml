@@ -62,6 +62,9 @@ dependencies:
   firebase_messaging: ^14.7.10
   flutter_local_notifications: ^22.0.1
 
+  # Deep linking
+  app_links: ^7.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
