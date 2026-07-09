@@ -33,7 +33,7 @@ void main() {
   group('BiometricService.isAvailable', () {
     test('reflects the authenticator when supported', () async {
       final service =
-          BiometricService(authenticator: _FakeAuthenticator(supported: true));
+          BiometricService(authenticator: _FakeAuthenticator());
       expect(await service.isAvailable(), isTrue);
     });
 
@@ -54,9 +54,7 @@ void main() {
 
   group('BiometricService.authenticate', () {
     test('returns true on a successful prompt', () async {
-      final service = BiometricService(
-        authenticator: _FakeAuthenticator(authenticateResult: true),
-      );
+      final service = BiometricService(authenticator: _FakeAuthenticator());
       expect(await service.authenticate(), isTrue);
     });
 
