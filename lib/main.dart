@@ -8,11 +8,16 @@ import 'screens/liquidity_screen.dart';
 import 'screens/pool_overview_screen.dart';
 import 'screens/swap_screen.dart';
 import 'screens/wallet_screen.dart';
+import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 import 'widgets/app_lock_gate.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Fire-and-forget, matching WalletProvider's own startup pattern: a
+  // missing Firebase project config must not block app launch, and
+  // initialize() already swallows that failure internally.
+  NotificationService().initialize();
   runApp(const AMMobileApp());
 }
 
