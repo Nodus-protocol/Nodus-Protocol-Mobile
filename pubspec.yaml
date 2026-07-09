@@ -51,6 +51,14 @@ dependencies:
   firebase_analytics: ^10.8.0
   firebase_crashlytics: ^3.4.9
 
+  # Push notifications
+  # Pinned to the 2.x/14.x line already implied by firebase_analytics and
+  # firebase_crashlytics's firebase_core ^2.24.2 requirement above, so
+  # adding these doesn't force an unrelated major-version bump of those.
+  firebase_core: ^2.32.0
+  firebase_messaging: ^14.9.4
+  flutter_local_notifications: ^22.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
