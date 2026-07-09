@@ -29,3 +29,33 @@ class LocalAuthAuthenticator implements BiometricAuthenticator {
     );
   }
 }
+
+/// Gates access behind the device's biometric (Face ID / fingerprint)
+/// enrollment. Every method fails closed to `false` on error rather than
+/// throwing, so callers can treat "unavailable" and "denied" the same way.
+class BiometricService {
+  BiometricService({BiometricAuthenticator? authenticator})
+      : _authenticator = authenticator ?? LocalAuthAuthenticator();
+
+  final BiometricAuthenticator _authenticator;
+
+  /// Whether this device has biometrics enrolled and usable right now.
+  Future<bool> isAvailable() async {
+    try {
+      return await _authenticator.isSupported();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Prompts the user for biometric authentication. Returns `false` on
+  /// cancellation, lockout, or any platform error instead of throwing, so
+  /// the caller can offer a retry rather than crash the lock screen.
+  Future<bool> authenticate() async {
+    try {
+      return await _authenticator.authenticate();
+    } catch (_) {
+      return false;
+    }
+  }
+}
