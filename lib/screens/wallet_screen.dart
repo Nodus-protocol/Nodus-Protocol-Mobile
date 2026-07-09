@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/wallet_provider.dart';
 import '../utils/validation.dart';
 import '../widgets/transaction_button.dart';
+import 'qr_scanner_screen.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -36,6 +37,29 @@ class _WalletScreenState extends State<WalletScreen> {
     _secretKeyController.clear();
   }
 
+  Future<void> _onScanQr() async {
+    final scanned = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => const QrScannerScreen(title: 'Scan Secret Key'),
+      ),
+    );
+    if (scanned == null) return;
+
+    final trimmed = scanned.trim();
+    final error = Validation.stellarSecretKey(trimmed);
+    if (!mounted) return;
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Scanned code is not a valid secret key: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    _secretKeyController.text = trimmed;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +75,7 @@ class _WalletScreenState extends State<WalletScreen> {
             obscureKey: _obscureKey,
             onToggleObscure: () => setState(() => _obscureKey = !_obscureKey),
             onConnect: () => _onConnect(provider),
+            onScanQr: _onScanQr,
           );
         },
       ),
@@ -65,6 +90,7 @@ class _ConnectView extends StatelessWidget {
     required this.obscureKey,
     required this.onToggleObscure,
     required this.onConnect,
+    required this.onScanQr,
   });
 
   final WalletProvider provider;
@@ -72,6 +98,7 @@ class _ConnectView extends StatelessWidget {
   final bool obscureKey;
   final VoidCallback onToggleObscure;
   final VoidCallback onConnect;
+  final VoidCallback onScanQr;
 
   @override
   Widget build(BuildContext context) {
@@ -103,9 +130,19 @@ class _ConnectView extends StatelessWidget {
             decoration: InputDecoration(
               labelText: 'Secret Key (S...)',
               hintText: 'SXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-              suffixIcon: IconButton(
-                icon: Icon(obscureKey ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                onPressed: onToggleObscure,
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.qr_code_scanner_outlined),
+                    tooltip: 'Scan QR code',
+                    onPressed: isConnecting ? null : onScanQr,
+                  ),
+                  IconButton(
+                    icon: Icon(obscureKey ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    onPressed: onToggleObscure,
+                  ),
+                ],
               ),
             ),
             style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
