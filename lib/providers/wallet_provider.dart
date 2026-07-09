@@ -22,6 +22,7 @@ class WalletProvider extends ChangeNotifier {
   String? _accessToken;
   String? _error;
   Map<String, double> _balances = {};
+  bool _isRestoring = true;
 
   final AuthService _authService = AuthService();
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
@@ -39,17 +40,24 @@ class WalletProvider extends ChangeNotifier {
   String? get error => _error;
   Map<String, double> get balances => _balances;
 
+  /// True until the initial secure-storage lookup on startup resolves.
+  /// Callers gating sensitive UI (e.g. the biometric lock screen) should
+  /// wait for this to go false before deciding what to show, so a restored
+  /// session is never rendered unprotected for even one frame.
+  bool get isRestoring => _isRestoring;
+
   Future<void> _restoreSession() async {
     final prefs = await SharedPreferences.getInstance();
     final address = prefs.getString(_keyAddress);
     final token = await _secureStorage.read(key: _keyAccess);
-    
+
     if (address != null && token != null) {
       _address = address;
       _accessToken = token;
       _state = WalletState.connected;
-      notifyListeners();
     }
+    _isRestoring = false;
+    notifyListeners();
   }
 
   /// Authenticates via SEP-10 using the provided Stellar secret key.
