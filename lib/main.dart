@@ -9,6 +9,7 @@ import 'screens/pool_overview_screen.dart';
 import 'screens/swap_screen.dart';
 import 'screens/wallet_screen.dart';
 import 'theme/app_theme.dart';
+import 'widgets/app_lock_gate.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,7 @@ class AMMobileApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        home: const HomeScreen(),
+        home: const AppLockGate(child: HomeScreen()),
       ),
     );
   }
