@@ -5,17 +5,17 @@ import 'package:nodus_protocol/services/notification_service.dart';
 void main() {
   group('notificationContentFor', () {
     test('returns null when the message carries no notification', () {
-      final message = RemoteMessage(data: const {'status': 'confirmed'});
+      const message = RemoteMessage(data: {'status': 'confirmed'});
       expect(notificationContentFor(message), isNull);
     });
 
     test('returns null when title and body are both absent', () {
-      final message = RemoteMessage(notification: RemoteNotification());
+      const message = RemoteMessage(notification: RemoteNotification());
       expect(notificationContentFor(message), isNull);
     });
 
     test('passes through a title and body', () {
-      final message = RemoteMessage(
+      const message = RemoteMessage(
         messageId: 'msg-1',
         notification: RemoteNotification(
           title: 'Swap confirmed',
@@ -31,7 +31,7 @@ void main() {
     });
 
     test('falls back to a default title when only a body is present', () {
-      final message = RemoteMessage(
+      const message = RemoteMessage(
         notification: RemoteNotification(body: 'Transaction failed.'),
       );
 
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('falls back to an empty body when only a title is present', () {
-      final message = RemoteMessage(
+      const message = RemoteMessage(
         notification: RemoteNotification(title: 'Heads up'),
       );
 
@@ -55,7 +55,7 @@ void main() {
     });
 
     test('derives the notification id from messageId when present', () {
-      final message = RemoteMessage(
+      const message = RemoteMessage(
         messageId: 'abc-123',
         notification: RemoteNotification(title: 'Hi'),
       );
