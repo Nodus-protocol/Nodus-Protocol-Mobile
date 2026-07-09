@@ -12,6 +12,7 @@ import 'services/deep_link_service.dart';
 import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 import 'widgets/app_lock_gate.dart';
+import 'widgets/deep_link_listener.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,12 @@ class AMMobileApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        home: const AppLockGate(child: HomeScreen()),
+        home: AppLockGate(
+          child: DeepLinkListener(
+            linkStream: deepLinkService.links,
+            child: const HomeScreen(),
+          ),
+        ),
       ),
     );
   }
