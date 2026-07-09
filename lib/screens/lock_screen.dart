@@ -43,6 +43,7 @@ class _LockScreenState extends State<LockScreen> {
     if (!mounted) return;
 
     if (success) {
+      setState(() => _authenticating = false);
       widget.onUnlocked();
       return;
     }
