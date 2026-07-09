@@ -30,6 +30,16 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Deep linking — nodusprotocol://pool, nodusprotocol://pay.
+                 Custom-scheme only: https://nodus.fi App Links would need
+                 a hosted .well-known/assetlinks.json for domain
+                 verification, which is out of scope for this repo. -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="nodusprotocol"/>
+            </intent-filter>
         </activity>
         <meta-data
             android:name="flutterEmbedding"
