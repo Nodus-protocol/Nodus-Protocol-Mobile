@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace "com.example.nodus_protocol_mobile"
+    namespace "fi.nodus.protocol"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.nodus_protocol_mobile"
+        applicationId "fi.nodus.protocol"
         minSdkVersion 26
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutter.versionCode

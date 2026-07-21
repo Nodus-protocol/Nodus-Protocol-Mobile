@@ -1,4 +1,4 @@
-package com.example.nodus_protocol_mobile
+package fi.nodus.protocol
 
 import io.flutter.embedding.android.FlutterActivity
 
