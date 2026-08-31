@@ -28,7 +28,7 @@ dependencies:
   
   # UI
   flutter_svg: ^2.0.9
-  shimmer: ^3.0.0
+  shimmer: ^4.0.0
   flutter_slidable: ^3.0.1
   
   # Utils
