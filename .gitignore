@@ -21,7 +21,6 @@ migrate_working_dir/
 .idea/
 
 # VSCode
-.vscode/
 
 # Flutter/Dart/Pub
 **/doc/api/
@@ -83,3 +82,5 @@ app.*.symbols
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !**/ios/**/*/.symlinks/
+config.bat
+node_modules
