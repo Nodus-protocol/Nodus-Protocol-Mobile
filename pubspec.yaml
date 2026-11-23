@@ -60,7 +60,7 @@ dependencies:
   # version incompatible with stellar_flutter_sdk's own `web` dependency.
   firebase_core: ^2.32.0
   firebase_messaging: ^14.7.10
-  flutter_local_notifications: ^22.0.1
+  flutter_local_notifications: ^23.0.3
 
   # Deep linking
   app_links: ^7.2.1
